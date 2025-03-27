@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>工單建立畫面（送出後跳回）</title>
+  <meta charset="UTF-8">
+  <script>
+    function generateWorkOrderID() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const rand = Math.floor(Math.random() * 900 + 100);
+      const wo_id = "WO-" + yyyy + mm + dd + "-" + rand;
+      document.getElementById("work_order_id_display").value = wo_id;
+      document.getElementById("work_order_id").value = wo_id;
+    }
+
+    window.onload = generateWorkOrderID;
+  </script>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 700px; margin: auto; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>工單建立畫面（送出後自動跳回）</h2>
+
+  <form id="workOrderForm" method="POST" action="https://script.google.com/macros/s/AKfycbwtCQZmb0bNGPXrUnxIafRVhvJGXaP7HLuhP3eOnUo9W1G6SshKk_L57IsrBFStQCBy-A/exec" target="hidden_iframe" onsubmit="submitted=true;">
+    <label>工單編號（系統自動產生）</label>
+    <input type="text" id="work_order_id_display" disabled>
+    <input type="hidden" id="work_order_id" name="work_order_id">
+
+    <label>產品品號 / 名稱 *</label>
+    <input type="text" name="product" required>
+
+    <label>預計生產數量 *</label>
+    <input type="number" name="quantity" required>
+
+    <label>BOM 表參照版本</label>
+    <select name="bom">
+      <option value="">請選擇版本</option>
+      <option value="v1">BOM v1</option>
+      <option value="v2">BOM v2</option>
+    </select>
+
+    <label>工單類型 *</label>
+    <select name="type" required>
+      <option value="">請選擇類型</option>
+      <option value="material">代料</option>
+      <option value="processing">加工</option>
+    </select>
+
+    <label>預計完成日期 *</label>
+    <input type="date" name="due_date" required>
+
+    <label>備註</label>
+    <textarea name="note" rows="4" placeholder="輸入其他說明..."></textarea>
+
+    <button type="submit">送出工單</button>
+  </form>
+
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" 
+    onload="if(submitted) { alert('✅ 工單已送出！'); window.location.reload(); }"></iframe>
+
+  <script>let submitted = false;</script>
+</body>
+</html>
