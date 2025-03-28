@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AOI測試紀錄</title>
+  <script>
+    function setTodayDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const dateStr = yyyy + "-" + mm + "-" + dd;
+      document.getElementById("work_order_id_display").value = dateStr;
+      document.getElementById("work_order_id").value = dateStr;
+    }
+    window.onload = setTodayDate;
+  </script>
+  <style>
+    body {
+      font-family: "Helvetica", "Arial", sans-serif;
+      padding: 20px;
+      margin: auto;
+      max-width: 480px;
+      background-color: #f2f4f8;
+    }
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    h2 {
+      text-align: center;
+      color: #004080;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      margin-top: 24px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+      border-left: 4px solid #007BFF;
+      padding-left: 8px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+      background-color: #fcfcfc;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #007BFF;
+      box-shadow: 0 0 4px #007BFF44;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 30px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    small {
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header style="background:#004080; color:white; padding:16px; text-align:center; border-radius:8px 8px 0 0;">
+    <h1 style="margin:0; font-size:22px;">AOI 測試紀錄系統</h1>
+    <div style="font-size:14px; opacity:0.85;">請如實填寫表單，資料將自動儲存於後台</div>
+  </header>
+  <div class="form-card">
+    
+
+    <form method="POST" onsubmit="lockSubmitButton(); submitted=true;" action="https://script.google.com/macros/s/AKfycbxRU9dBpv1PbbdbBKlJfw8px7XqDer4BLi8bWYcN4r8v6UOf5XI6zrljFNVIKvDelJB6w/exec" target="hidden_iframe" onsubmit="submitted=true;">
+
+      <div class="section-title">📌 基本資訊</div>
+
+      <label>日期（自動填入）</label>
+      <input type="text" id="work_order_id_display" disabled>
+      <input type="hidden" id="work_order_id" name="work_order_id">
+
+      <label>客戶 <span style="color:red">*</span></label>
+      <input type="text" name="product" required>
+
+      <label>工單號碼（僅限數字與符號）<span style="color:red">*</span></label>
+      <input type="text" name="quantity" inputmode="text" pattern="[0-9\-\_\#\*]+" required>
+
+      <label>機種 <span style="color:red">*</span></label>
+      <input type="text" name="bom" required>
+
+      <div class="section-title">🔢 數量填寫</div>
+
+      <label>訂單數量 <span style="color:red">*</span></label>
+      <input type="number" name="type" inputmode="numeric" min="0" required>
+
+      <label>測試數量 <span style="color:red">*</span></label>
+      <input type="number" name="test_qty" inputmode="numeric" min="0" required>
+
+      <label>不良數量</label>
+      <input type="number" name="defect_qty" inputmode="numeric" min="0" value="0">
+
+      <label>複判數量</label>
+      <input type="number" name="recheck_qty" inputmode="numeric" min="0" value="0">
+
+      <div class="section-title">👤 其他</div>
+
+      
+<label>測試人員 <span style="color:red">*</span></label>
+<select name="due_date" id="tester_select" required onchange="toggleCustomInput(this.value)">
+  <option value="">請選擇人員</option>
+  <option value="011-林智翔">011-林智翔</option>
+  <option value="043-王啟光">043-王啟光</option>
+  <option value="059-梁慧忻">059-梁慧忻</option>
+  <option value="067-陳雅雯">067-陳雅雯</option>
+  <option value="其他">其他</option>
+</select>
+
+<div id="custom_tester_box" style="display:none; margin-top:8px;">
+  <input type="text" id="custom_tester_input" placeholder="請輸入姓名" oninput="updateDueDate()" />
+</div>
+
+<input type="hidden" name="due_date" id="due_date_final">
+
+
+      <label>備註</label>
+      <textarea name="note" rows="3" placeholder="其他補充..."></textarea>
+
+      <button id="submitBtn" type="submit">✅ 送出工單</button>
+    </form>
+  </div>
+
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" 
+    onload="if(submitted) { alert('✅ 工單已送出！'); window.location.reload(); }"></iframe>
+  
+<script>
+let submitted = false;
+function lockSubmitButton() {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "送出中...";
+}
+</script>
+
+
+<script>
+function toggleCustomInput(value) {
+  const box = document.getElementById("custom_tester_box");
+  const hiddenInput = document.getElementById("due_date_final");
+  if (value === "其他") {
+    box.style.display = "block";
+    hiddenInput.value = "";
+  } else {
+    box.style.display = "none";
+    hiddenInput.value = value;
+  }
+}
+function updateDueDate() {
+  const customInput = document.getElementById("custom_tester_input").value;
+  document.getElementById("due_date_final").value = customInput;
+}
+</script>
+
+</body>
+</html>
